@@ -1,26 +1,18 @@
-import os
 from jira import JIRA
 
-def ping_jira():
-    try:
-        # Pull secrets from GitHub environment
-        server = os.getenv("JIRA_SERVER")
-        email = os.getenv("JIRA_EMAIL")
-        token = os.getenv("JIRA_API_TOKEN")
+# 1. Hardcode for a 1-time local test
+JIRA_SERVER = https://revo-tech.atlassian.net/
+JIRA_EMAIL =  pratap.mundasada@revo-tech.co.uk
+JIRA_API_TOKEN = ATATT3xFfGF0nNdopLS2-LiiykzJ3kHRyiJDWC1UddiCq7YZDSp4DK2qoUcskfpZfbcYIUa3X3R7cEgvHmoYWZjRHY7aVGPrHLiVzC513ErUHIC3FZDnb7VnHVx__wRXZC6CGN_QScEuCtWhpyWF1Y-6d0eXpaY7L2ZaQL8UrbooZ6p6vAkiCEs=FA028563
 
-        print(f"📡 Attempting to connect to: {server}")
-        
-        jira = JIRA(server=server, basic_auth=(email, token))
-        
-        # Get server info - this proves the connection works
-        info = jira.server_info()
-        print(f"✅ Success! Connected to Jira version: {info.get('version')}")
-        print(f"🏢 Server Title: {info.get('serverTitle')}")
-        
+
+def check():
+    try:
+        # Use the variables defined above
+        j = JIRA(server=JIRA_SERVER, basic_auth=(JIRA_EMAIL, JIRA_API_TOKEN))
+        print(f"✅ Connected to: {j.server_info()['serverTitle']}")
     except Exception as e:
-        print(f"❌ Connection Failed!")
-        print(f"Error Details: {e}")
+        print(f"❌ Connection Failed: {e}")
 
 if __name__ == "__main__":
-    ping_jira()
-
+    check()
