@@ -20,7 +20,7 @@ jobs:
       - name: Commit and Push results
         run: |
           git config --global user.name "Agratas Automation Bot"
-          git config --global user.email "automation@agratas.com"
+          git config --global user.email "pratap.mundasada@revo-tech.co.uk"
           git add latest_results.csv
           git commit -m "Update validation telemetry [skip ci]" || echo "No changes to commit"
-          git push
+          git pull --rebase origin main && git push
