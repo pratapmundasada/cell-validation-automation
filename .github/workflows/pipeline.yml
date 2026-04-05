@@ -17,3 +17,10 @@ jobs:
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         run: python validate_and_track.py
+      - name: Commit and Push results
+        run: |
+          git config --global user.name "Agratas Automation Bot"
+          git config --global user.email "automation@agratas.com"
+          git add latest_results.csv
+          git commit -m "Update validation telemetry [skip ci]" || echo "No changes to commit"
+          git push
