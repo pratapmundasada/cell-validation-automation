@@ -1,19 +1,26 @@
-name: Automated Cell Validation
-on: [push]
+name: Jira Connectivity Test
+on: 
+  workflow_dispatch: # This allows you to run it manually for testing
 
 jobs:
-  run-analysis:
+  ping-jira:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
-        with: {python-version: '3.10'}
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run Script
+        with:
+          python-version: '3.10'
+
+      - name: Install Jira Library
+        run: pip install jira
+
+      - name: Run Connectivity Script
+        # This block is CRITICAL. It maps Secrets to the Script.
         env:
           JIRA_SERVER: ${{ secrets.JIRA_SERVER }}
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-        run: python validate_and_track.py
+        run: python test_jira_ping.py
