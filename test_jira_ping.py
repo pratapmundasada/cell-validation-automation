@@ -6,7 +6,7 @@ def connect():
     server = os.getenv("JIRA_SERVER")
     email = os.getenv("JIRA_EMAIL")
     token = os.getenv("JIRA_API_TOKEN")
-
+    
     # Principal Check: Ensure variables actually arrived
     if not server:
         print("❌ Error: JIRA_SERVER variable is empty. Check your YAML!")
