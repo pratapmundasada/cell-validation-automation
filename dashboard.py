@@ -6,7 +6,7 @@ st.set_page_config(page_title="Cell Validation Dashboard", layout="wide")
 st.title("🔋 Cell Validation Live Results")
 
 # Load the processed data
-df = pd.read_csv("processed_results.csv")
+df = pd.read_csv("latest_results.csv")
 
 # Metric Row
 col1, col2, col3 = st.columns(3)
