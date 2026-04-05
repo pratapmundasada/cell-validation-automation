@@ -1,9 +1,8 @@
-name: Jira Connectivity Test
-on: 
-  workflow_dispatch: # This allows you to run it manually for testing
+name: Create Jira Ticket with CSV
+on: [workflow_dispatch]
 
 jobs:
-  ping-jira:
+  jira-task:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -14,11 +13,15 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Jira Library
+      - name: Install Dependencies
         run: pip install jira
 
-      - name: Run Connectivity Script
-        # This block is CRITICAL. It maps Secrets to the Script.
+      # Replace this step with whatever generates your CSV, 
+      # or ensure validation_results.csv is in your repo.
+      - name: Verify CSV exists
+        run: ls -l latets_results.csv
+
+      - name: Run Jira Automation
         env:
           JIRA_SERVER: ${{ secrets.JIRA_SERVER }}
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
