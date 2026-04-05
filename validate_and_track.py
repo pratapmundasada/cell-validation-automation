@@ -1,35 +1,53 @@
-import os
 import pandas as pd
-import numpy as np
+import os
 from jira import JIRA
 
-# 1. Connect to Jira using GitHub Secrets
-jira_server = os.getenv("JIRA_SERVER")
-jira_email = os.getenv("JIRA_EMAIL")
-jira_token = os.getenv("JIRA_API_TOKEN")
+def connect_to_jira():
+    """Secure connection using GitHub Secrets"""
+    return JIRA(
+        server=os.getenv("JIRA_SERVER"), 
+        basic_auth=(os.getenv("JIRA_EMAIL"), os.getenv("JIRA_API_TOKEN"))
+    )
 
-# Initialize Jira client
-jira = JIRA(server=jira_server, basic_auth=(jira_email, jira_token))
-
-def run_validation():
-    # Simulate loading a dataset
-    data = {'cell_id': [f'C-{i}' for i in range(10)], 
-            'voltage': np.random.uniform(3.0, 4.5, 10)}
-    df = pd.DataFrame(data)
+def sync_results_to_jira():
+    # 1. Load the data the dashboard is showing
+    if not os.path.exists('latest_results.csv'):
+        print("❌ CSV not found. Nothing to sync.")
+        return
+        
+    df = pd.read_csv('latest_results.csv')
+    jira = connect_to_jira()
     
-    # Logic: Identify any cell with voltage > 4.2 (Overcharged)
-    failures = df[df['voltage'] > 4.2]
+    # 2. Filter for FAILURES (e.g., Cell 3, Cell 7, Cell 10)
+    failures = df[df['status'] == 'FAIL']
     
     for _, row in failures.iterrows():
-        summary = f"CRITICAL: Cell {row['cell_id']} Overcharged"
-        description = f"Validation failed. Voltage detected at {row['voltage']}V."
+        cell_id = row['cell_id']
+        summary = f"Validation Failure: {cell_id}"
         
-        # Create issue in Jira
-        jira.create_issue(project='CELL', summary=summary, 
-                          description=description, issuetype={'name': 'Bug'})
-        print(f"Logged Jira Bug for {row['cell_id']}")
-
-    df.to_csv("latest_results.csv", index=False)
+        # 3. Principal Move: Check if ticket already exists to avoid duplicates
+        existing_issues = jira.search_issues(f'project=BTU AND summary ~ "{cell_id}" AND status != Closed')
+        
+        if len(existing_issues) == 0:
+            print(f"🚀 Creating new ticket for {cell_id}...")
+            issue_dict = {
+                'project': 'KAN',
+                'summary': summary,
+                'description': (
+                    f"Automated Alert from Agratas CI Pipeline\n"
+                    f"----------------------------------------\n"
+                    f"Cell ID: {cell_id}\n"
+                    f"Capacity: {row['discharge_capacity_ah']} Ah\n"
+                    f"Max Temp: {row['max_temp_c']}°C\n"
+                    f"DCR: {row['dcr_mOhm']} mOhm\n"
+                    f"Test Stage: {row['test_stage']}"
+                ),
+                'issuetype': {'name': 'Bug'},
+                'priority': {'name': 'High'}
+            }
+            jira.create_issue(fields=issue_dict)
+        else:
+            print(f"ℹ️ Ticket for {cell_id} already exists. Skipping.")
 
 if __name__ == "__main__":
-    run_validation()
+    sync_results_to_jira()
