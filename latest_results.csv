@@ -1,8 +1,11 @@
-﻿Column Name,Example Value,Description
-timestamp,05/04/2026 14:00,When the test was logged.
-test_stage,DV,Design Validation (for JLR prototypes).
-cell_id,AG-LFP-001,Agratas LFP (Lithium Iron Phosphate) cell ID.
-discharge_capacity_ah,102.5,Standard capacity for large prismatic cells.
-dcr_mOhm,0.45,Direct Current Resistance (Crucial for fast charging).
-max_temp_c,38.2,Thermal safety monitoring.
-status,PASS,Automated validation result.
+﻿cell_id,test_stage,discharge_capacity_ah,dcr_mOhm,max_temp_c,status
+cell 1,CV,102.5,0.42,35.2,PASS
+cell 2,CV,101.8,0.44,36.5,PASS
+cell 3,CV,94.2,0.65,58.2,FAIL
+cell 4,DV,103.1,0.41,34.8,PASS
+cell 5,DV,102.7,0.43,35.9,PASS
+cell 6,DV,98.5,0.58,42.1,PASS
+cell 7,DV,89.4,0.72,62.5,FAIL
+cell 8,DV,101.2,0.46,37.0,PASS
+cell 9,DV,100.9,0.47,38.2,PASS
+cell 10,DV,92.1,0.61,45.5,FAIL
