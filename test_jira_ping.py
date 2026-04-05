@@ -1,23 +1,38 @@
 import os
 from jira import JIRA
 
-def test_connection():
+def create_and_attach():
+    # 1. Setup Connection
     server = os.getenv("JIRA_SERVER")
-    email = os.getenv("os.getenv('JIRA_EMAIL')") # Matches the YML env name
+    email = os.getenv("JIRA_EMAIL")
     token = os.getenv("JIRA_API_TOKEN")
+    jira = JIRA(server=server, basic_auth=(email, token))
 
-    print(f"Checking connection to: {server}")
-
-    if not server or "localhost" in server:
-        print("❌ Error: JIRA_SERVER is not being passed correctly from GitHub Secrets.")
-        return
+    # 2. Define Issue Details (Update 'BTU' to your project key)
+    issue_dict = {
+        'project': {'key': 'KAN'},
+        'summary': 'Cell Validation Report - Automated Upload',
+        'description': 'Automated ticket created by GitHub Actions with cell validation results.',
+        'issuetype': {'name': 'Task'}, # Or 'Bug' / 'Story'
+    }
 
     try:
-        # The actual handshake
-        jira = JIRA(server=server, basic_auth=(email, token))
-        print(f"✅ Success! Connected to Jira: {jira.server_info()['serverTitle']}")
+        # 3. Create the Issue
+        new_issue = jira.create_issue(fields=issue_dict)
+        print(f"✅ Ticket Created: {new_issue.key}")
+
+        # 4. Attach the CSV
+        csv_file_path = 'validation_results.csv' # Ensure this matches your filename
+        
+        if os.path.exists(csv_file_path):
+            with open(csv_file_path, 'rb') as f:
+                jira.add_attachment(issue=new_issue, attachment=f)
+            print(f"📎 File '{csv_file_path}' attached successfully to {new_issue.key}")
+        else:
+            print(f"❌ Error: {csv_file_path} not found in directory.")
+
     except Exception as e:
-        print(f"❌ Connection Failed. Details: {e}")
+        print(f"❌ Failed to complete Jira task: {e}")
 
 if __name__ == "__main__":
-    test_connection()
+    create_and_attach()
