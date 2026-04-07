@@ -4,8 +4,8 @@ import plotly.express as px
 import os
 
 # 1. Branding & Security Title
-st.set_page_config(page_title="Agratas Validation Portal", page_icon="🔋")
-st.title("🔋 Pilot prject")
+st.set_page_config(page_title="Validation Portal", page_icon="🔋")
+st.title("Pilot prject")
 st.markdown("### *Automated CI/CD Telemetry Pipeline*")
 st.divider()
 
