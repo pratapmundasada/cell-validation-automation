@@ -19,7 +19,7 @@ jobs:
       # Replace this step with whatever generates your CSV, 
       # or ensure validation_results.csv is in your repo.
       - name: Verify CSV exists
-        run: ls -l Master_Retention_Summary.xlsx
+        run: ls -l '**.xlsx'
 
       - name: Run Jira Automation
         env:
