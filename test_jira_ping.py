@@ -22,7 +22,7 @@ def create_and_attach():
         print(f"✅ Ticket Created: {new_issue.key}")
 
         # 4. Attach the CSV
-        csv_file_path = 'latest_results.csv' # Ensure this matches your filename
+        csv_file_path = 'Master_Retention_Summary.xlsx' # Ensure this matches your filename
         
         if os.path.exists(csv_file_path):
             with open(csv_file_path, 'rb') as f:
