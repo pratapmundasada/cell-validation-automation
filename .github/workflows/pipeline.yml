@@ -1,6 +1,6 @@
 name: Create Jira Ticket with CSV
 on: 
-  [workflow_dispatch]:
+  workflow_dispatch:
   push:
     paths:
       - "**.xlsx"
